@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>设备中心</title>
+<script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="../AmazeUI/js/amazeui.js"></script>
+<script type="text/javascript" src="../js/devicesCenter.js"></script>
+<script type="text/javascript"
+	src="http://api.map.baidu.com/api?v=2.0&ak=U1PKTEQKrbWAt5S4qIun4vAdv8lNLpz1"></script>
+<link href="../AmazeUI/css/amazeui.css" rel="stylesheet" />
+<link href="../css/devicesCenter.css" rel="stylesheet" />
+</head>
+<body onload="findDevicesList(1)">
+	<div class="admin-content">
+		<div class="admin-content-body">
+			<div class="am-cf am-padding">
+				<div class="am-fl am-cf">
+					<strong class="am-text-primary am-text-lg">设备中心</strong>
+				</div>
+			</div>
+			<ul
+				class="am-avg-sm-1 am-avg-md-4 am-margin am-padding am-text-center admin-content-list ">
+				<li><a href="#" class="am-text-success"><span
+						class="am-icon-btn am-icon-file-text"
+						data-am-offcanvas="{target: '#findDevicesSidebar'}"></span><br>查询设备</a></li>
+				<li><a href="#" class="am-text-warning"><span
+						class="am-icon-btn am-icon-briefcase"
+						data-am-modal="{target: '#addDevicesModal', closeViaDimmer: 0, width: 1000, height:530}"
+						onclick="createMap(),initTagValue()"></span><br>新增设备</a></li>
+				<li><a href="#" class="am-text-danger"><span
+						class="am-icon-btn am-icon-recycle"></span><br>在线设备<br>200</a></li>
+				<li><a href="#" class="am-text-secondary"><span
+						class="am-icon-btn am-icon-user-md"></span><br>设备总数<br>3000</a></li>
+			</ul>
+			<!-- 设备列表 -->
+			<div class="am-g">
+				<div class="am-u-sm-12">
+					<table class="am-table am-table-striped am-table-hover">
+						<thead>
+							<tr>
+								<th>设备ID</th>
+								<th>设备唯一编号</th>
+								<th>设备名</th>
+								<th>是否在线</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tbody">
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- 	动态生成上下页按钮 -->
+			<div id="setPage"></div>
+
+
+			<!-- 查询设备侧边栏 -->
+			<div id="findDevicesSidebar" class="am-offcanvas">
+				<div class="am-offcanvas-bar am-offcanvas-bar-flip">
+					<div class="am-offcanvas-content">
+						<div
+							class="am-input-group am-input-group-secondary am-margin-bottom">
+							<span class="am-input-group-label"><i
+								class="am-icon-credit-card-alt am-icon-fw"></i></span> <input
+								id="keywords" type="text" class="am-form-field"
+								placeholder="设备ID或设备名" />
+						</div>
+						<div
+							class="am-input-group am-input-group-secondary am-margin-bottom">
+							<span class="am-input-group-label"><i
+								class="am-icon-calendar am-icon-fw"></i></span> <input id="begin"
+								placeholder="开始时间" type="text" class="am-form-field"
+								data-am-datepicker />
+						</div>
+						<div
+							class="am-input-group am-input-group-secondary am-margin-bottom">
+							<span class="am-input-group-label"><i
+								class="am-icon-calendar am-icon-fw"></i></span> <input id="end"
+								placeholder="结束时间" type="text" class="am-form-field"
+								data-am-datepicker />
+						</div>
+						<div
+							class="am-input-group am-input-group-secondary am-margin-bottom">
+							<span class="am-input-group-label"><i
+								class="am-icon-plug am-icon-fw"></i></span> <select id="isOnline"
+								class="am-form-field"
+								data-am-selected="{btnWidth: '100%', btnStyle: 'primary'}">
+								<option value="all">全部</option>
+								<option value="true">在线</option>
+								<option value="false">离线</option>
+							</select>
+						</div>
+						<div class="am-containe am-margin-bottom">
+							<button class="am-center am-btn am-btn-secondary am-round"
+								onclick="findDevicesList(1)">查询设备</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 新增设备模态框 -->
+			<div class="am-modal am-modal-no-btn" tabindex="-1"
+				id="addDevicesModal">
+				<div class="am-modal-dialog">
+					<div class="am-modal-hd">
+						<h2>新增设备</h2>
+						<i class="am-close am-close-spin" data-am-modal-close>&times;</i>
+					</div>
+					<div class="am-g am-modal-bd">
+						<!--左边 -->
+						<div class="am-u-lg-6">
+							<!-- 新增设备名 -->
+							<div
+								class="am-input-group am-input-group-secondary am-margin-bottom">
+								<span class="am-input-group-label"><i
+									class="am-icon-television am-icon-fw"></i></span> <input id="title"
+									placeholder="设备名" type="text" class="am-form-field" />
+							</div>
+							<!-- 新增设备编号 -->
+							<div
+								class="am-input-group am-input-group-secondary am-margin-bottom">
+								<span class="am-input-group-label"><i
+									class="am-icon-cc am-icon-fw"></i></span> <input id="auth_info"
+									placeholder="设备编号" type="text" class="am-form-field" />
+							</div>
+							<!-- 新增数据私密性 -->
+							<div class="am-margin-bottom am-input-group">
+								<span class="am-input-group-label"> <label
+									class="am-radio-inline am-secondary"><input
+										type="radio" name="isPrivate" value="true" data-am-ucheck />数据私密</label></span>
+								<span class="am-input-group-label"><label
+									class="am-radio-inline am-secondary"><input
+										type="radio" name="isPrivate" value="false" data-am-ucheck />数据公开</label></span>
+							</div>
+							<!-- 新增设备描述 -->
+							<div
+								class="am-input-group am-input-group-secondary am-margin-bottom">
+								<span class="am-input-group-label"><i
+									class="am-icon-file-word-o am-icon-fw"></i></span>
+								<textarea id="desc" placeholder="设备描述" class="am-form-field"></textarea>
+							</div>
+							<!-- 新增设备标签 -->
+							<div
+								class="am-input-group am-input-group-secondary am-margin-bottom">
+								<span class="am-input-group-label"><i
+									class="am-icon-tags am-icon-fw"></i></span> <input id="inputTag"
+									placeholder="最多5个标签" class="am-form-field" /> <span
+									class="am-input-group-btn">
+									<button class="am-btn am-btn-secondary"
+										onclick="addTags('tags','inputTag')">添加</button>
+								</span>
+							</div>
+							<div id="tags" class="am-margin-bottom"></div>
+							<!-- 新增经纬度 -->
+							<div class="am-input-group am-input-group-secondary">
+								<span class="am-input-group-label"><i
+									class="am-icon-map-marker am-icon-fw"></i></span> <input
+									id="longitude" placeholder="经度" class="am-form-field" />
+							</div>
+							<div
+								class="am-input-group am-input-group-secondary am-margin-bottom">
+								<span class="am-input-group-label"><i
+									class="am-icon-map-marker am-icon-fw"></i></span> <input id="latitude"
+									placeholder="纬度" class="am-form-field" />
+							</div>
+						</div>
+						<!--右边 -->
+						<div class="am-u-lg-6">
+							<!-- 新增设备位置 -->
+							<div id="container" class="am-margin-bottom"></div>
+						</div>
+						<!-- 确定新增设备 -->
+						<button class="am-btn am-btn-secondary" onclick="addDevices()">确定新增设备</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- 显示设备详情模态框 -->
+			<div class="am-modal am-modal-no-btn" tabindex="-1"
+				id="displalyDeviceModal">
+				<div class="am-modal-dialog">
+					<div class="am-modal-hd">
+						<h2>设备详情</h2>
+						<i class="am-close am-close-spin" data-am-modal-close>&times;</i>
+					</div>
+					<div class="am-g am-modal-bd">
+						<!-- 左边 -->
+						<div class="am-u-lg-6">
+							<!-- 设备详情ID -->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">设备ID：</span> <input
+									id="displayID" type="text" class="am-form-field"
+									readonly="readonly">
+							</div>
+							<!-- 设备详情设备名-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">设备名：</span> <input
+									id="displayTitle" type="text" class="am-form-field"
+									readonly="readonly">
+							</div>
+							<!-- 设备详情设备编号-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">设备编号：</span> <input
+									id="displayAuthInfo" type="text" class="am-form-field"
+									readonly="readonly">
+							</div>
+							<!-- 设备详情设备描述-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">设备描述：</span> <input
+									id="displayDesc" type="text" class="am-form-field"
+									readonly="readonly">
+							</div>
+							<!-- 设备详情接入协议-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">接入协议：</span> <input
+									id="displayProtocol" type="text" class="am-form-field"
+									readonly="readonly">
+							</div>
+							<!-- 设备详情创建时间-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">创建时间：</span> <input
+									id="displayCreateTime" type="text" class="am-form-field"
+									readonly="readonly">
+							</div>
+							<!-- 设备详情数据私密性-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">数据私密性：</span> <input
+									id="displayPrivate" type="text" class="am-form-field"
+									readonly="readonly">
+							</div>
+							<!-- 设备详情设备标签-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">设备标签：</span>
+								<div id="displayTags" class="am-form-field"></div>
+							</div>
+						</div>
+						<!-- 右边 -->
+						<div class="am-u-lg-6">
+							<!-- 设备详情设备地图-->
+							<div id="displayMap"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 更新设备信息模态框 -->
+			<div class="am-modal am-modal-no-btn" tabindex="-1"
+				id="modifyDeviceModal">
+				<div class="am-modal-dialog">
+					<div class="am-modal-hd">
+						<h2>更新设备</h2>
+						<i class="am-close am-close-spin" data-am-modal-close>&times;</i>
+					</div>
+					<div class="am-g am-modal-bd">
+						<!-- 左边 -->
+						<div class="am-u-lg-6">
+							<!-- 更新设备ID-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">设备ID：</span> <input
+									id="modifyID" type="text" class="am-form-field"
+									readonly="readonly">
+							</div>
+							<!-- 更新设备名-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">设备名：</span> <input
+									id="modifyTitle" type="text" class="am-form-field">
+							</div>
+							<!-- 更新设备编号-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">设备编号：</span> <input
+									id="modifyAuthInfo" type="text" class="am-form-field">
+							</div>
+							<!-- 更新设备描述-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">设备描述：</span> <input
+									id="modifyDesc" type="text" class="am-form-field">
+							</div>
+							<!-- 更新设备数据私密性-->
+							<div class="am-margin-bottom am-input-group">
+								<span class="am-input-group-label"> <label
+									class="am-radio-inline am-secondary"><input
+										type="radio" name="modifyPrivate" value="true" data-am-ucheck />数据私密</label></span>
+								<span class="am-input-group-label"><label
+									class="am-radio-inline am-secondary"><input
+										type="radio" name="modifyPrivate" value="false" data-am-ucheck />数据公开</label></span>
+							</div>
+							<!-- 更新设备经纬度 -->
+							<div class="am-input-group am-input-group-primary">
+								<span class="am-input-group-label">经度：</span> <input
+									id="modifylongitude" placeholder="经度" class="am-form-field" />
+							</div>
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">纬度：</span> <input
+									id="modifylatitude" placeholder="纬度" class="am-form-field" />
+							</div>
+							<!-- 更新设备标签-->
+							<div
+								class="am-input-group am-input-group-primary am-margin-bottom">
+								<span class="am-input-group-label">设备标签：</span> <input
+									id="inputModifyTags" placeholder="最多5个标签" class="am-form-field" />
+								<span class="am-input-group-btn">
+									<button class="am-btn am-btn-secondary"
+										onclick="addTags('modifyTags','inputModifyTags')">添加</button>
+								</span>
+							</div>
+							<div id="modifyTags"></div>
+						</div>
+						<!-- 右边 -->
+						<div class="am-u-lg-6">
+							<!-- 更新设备地图-->
+							<div id="modifyMap" class="am-margin-bottom"></div>
+						</div>
+						<button class="am-btn am-btn-secondary" onclick="modifyDevices()">更新设备</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

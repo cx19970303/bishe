@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.header {
+	width: 100%;
+	height: 10%;
+	background-color: #5f6366;
+}
+
+.left {
+	width: 15%;
+	height: 100%;
+	float: left;
+	background-color: #b8cdfe;
+}
+
+.right {
+	width: 85%;
+	height: 100%;
+	background-color: #ffffff;
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>物联网应用平台</title>
+<script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript" src="../js/welcome.js"></script>
+<link href="../css/welcome.css" rel="stylesheet" />
+<script type="text/javascript" src="../AmazeUI/js/amazeui.js"></script>
+<link href="../AmazeUI/css/amazeui.css" rel="stylesheet" />
+</head>
+<body>
+
+	<!-- 	上部 -->
+	<header class="am-topbar am-topbar-inverse am-topbar-fixed-top">
+		<h1 class="am-topbar-brand">
+			<a>物联网平台</a>
+		</h1>
+		<div class="am-topbar-right am-vertical-align">
+			<span class="am-icon-user am-vertical-align-middle"></span> <span
+				id="sessionName" class="am-vertical-align-middle"></span>
+			<button class="am-btn am-btn-primary am-topbar-btn am-btn-sm"
+				onclick="cancel()">注销</button>
+		</div>
+	</header>
+
+
+	<!-- 	左边 -->
+	<div class="left">
+		<ul class="am-nav">
+			<li><a target='homePage' href="/devicesCenter.html"><span>设备中心</span></a></li>
+			<li><a target='homePage' href="/dataCenter.html"><span>数据中心</span></a></li>
+		</ul>
+	</div>
+	<!-- 	右边 -->
+	<iframe class="right" name="homePage" src="/homePage.html"></iframe>
+</body>
+</html>

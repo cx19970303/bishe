@@ -1,0 +1,24 @@
+html {
+	height: 100%
+}
+
+body {
+	height: 100%;
+	margin: 0px;
+	padding: 0px
+}
+
+#container {
+	height: 400px;
+	width: 100%;
+}
+
+#displayMap {
+	height: 400px;
+	width: 100%;
+}
+
+#modifyMap {
+	height: 400px;
+	width: 100%;
+}
